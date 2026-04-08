@@ -1,1 +1,401 @@
+/* -------------------------------------- */
+/* 1. ESTILOS GLOBALES Y ANIMACIÓN DEL CORAZÓN */
+/* -------------------------------------- */
+body {
+    background: linear-gradient(135deg, #f9a4b8 0%, #f57795 100%); 
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden; 
+}
 
+/* Clase para ocultar elementos inicialmente */
+.oculto {
+    display: none !important;
+}
+
+/* -------------------------------------- */
+/* 1B. ESTILO DE LA PANTALLA DE CLAVE */
+/* -------------------------------------- */
+.bloqueador-pantalla {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f9a4b8 0%, #f57795 100%); 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 2000; 
+    text-align: center;
+    transition: opacity 0.5s ease-out; 
+}
+
+.bloqueador-pantalla h2 {
+    font-family: 'Sacramento', cursive;
+    font-size: 3em;
+    margin-bottom: 20px;
+    color: #8B0000;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+#claveInput {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2em;
+    width: 80%;
+    max-width: 300px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#claveBoton {
+    padding: 10px 25px;
+    background-color: #8B0000;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#claveBoton:hover {
+    background-color: #7C0A02;
+}
+
+#mensajeError {
+    color: #FFD700;
+    margin-top: 10px;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+
+/* -------------------------------------- */
+/* EFECTO DE DESTELLOS/PARTÍCULAS MÁGICAS (BRILLO DE FONDO) */
+/* -------------------------------------- */
+@keyframes parpadeo-lento {
+    0% { opacity: 0.3; box-shadow: 0 0 5px rgba(255, 255, 255, 0.4); }
+    50% { opacity: 1; box-shadow: 0 0 15px rgba(255, 255, 255, 1); } 
+    100% { opacity: 0.3; box-shadow: 0 0 5px rgba(255, 255, 255, 0.4); }
+}
+
+body::before {
+    content: '';
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    /* Partículas blancas que simulan brillo/magia */
+    background: radial-gradient(circle, rgba(255, 255, 255, 1) 1.5px, transparent 1px),
+                radial-gradient(circle, rgba(255, 255, 255, 0.9) 1.5px, transparent 1px),
+                radial-gradient(circle, rgba(255, 255, 255, 0.7) 1.5px, transparent 1px);
+    background-size: 50px 50px, 80px 80px, 120px 120px;
+    background-color: transparent;
+    animation: parpadeo-lento 6s infinite; 
+    z-index: -1; 
+}
+
+/* Animación de latido del corazón */
+@keyframes latido {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+/* -------------------------------------- */
+/* 2. DISEÑO DE LA TARJETA Y VOLTEO 3D (ESCRITORIO) */
+/* -------------------------------------- */
+.tarjeta-contenedor {
+    perspective: 1000px; 
+}
+
+/* Contenedor principal de la tarjeta volteable */
+.tarjeta {
+    width: 350px; 
+    min-height: 500px; 
+    background-color: transparent; 
+    border-radius: 20px;
+    box-shadow: none; 
+    padding: 0;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    transform-style: preserve-3d;
+    transition: transform 0.8s ease-in-out; 
+    cursor: pointer; 
+}
+
+/* Gira la tarjeta 180 grados al hacer clic */
+.tarjeta.girar {
+    transform: rotateY(180deg);
+}
+
+/* Estilo común para las caras (frente y reverso) */
+.frente, .reverso {
+    position: absolute;
+    width: 100%;
+    min-height: 100%; 
+    backface-visibility: hidden; 
+    background-color: white; 
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 0 5px rgba(0, 0, 0, 0.05); 
+    padding: 30px;
+    top: 0;
+    left: 0;
+    box-sizing: border-box; 
+}
+
+/* La cara del reverso se inicia girada 180 grados */
+.reverso {
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* -------------------------------------- */
+/* 3. ELEMENTO PRINCIPAL: EL CORAZÓN */
+/* -------------------------------------- */
+.corazon-animado {
+    width: 60px;
+    height: 60px;
+    background-color: #8B0000; 
+    position: relative;
+    margin: 30px auto 10px auto; 
+    transform: rotate(-45deg);
+    animation: latido 1.5s infinite; 
+}
+.corazon-animado::before,
+.corazon-animado::after {
+    content: "";
+    width: 60px;
+    height: 60px;
+    background-color: #8B0000;
+    border-radius: 50%;
+    position: absolute;
+}
+.corazon-animado::before {
+    left: -30px;
+    top: 0;
+}
+.corazon-animado::after {
+    top: -30px;
+    left: 0;
+}
+
+/* -------------------------------------- */
+/* 4. ESTILOS DE TEXTO (Común y Reverso) */
+/* -------------------------------------- */
+h1 {
+    font-size: 1.8em;
+    color: #222; 
+    margin-bottom: 15px;
+    font-family: 'Sacramento', cursive; 
+    font-size: 2.5em; 
+}
+
+.contenido-mensaje p {
+    color: #333; 
+    font-family: 'Arial', sans-serif; 
+    font-size: 1.1em; 
+    line-height: 1.6;
+    margin-bottom: 15px;
+    font-weight: normal; 
+}
+
+.firma {
+    color: #7C0A02; 
+    font-family: 'Arial', sans-serif;
+    font-style: italic;
+    font-weight: bold;
+    margin-top: 30px !important;
+    font-size: 1.2em;
+}
+
+/* --- ESTILOS ESPECÍFICOS DEL REVERSO --- */
+
+.reverso-contenido h2 {
+    font-size: 1.8em;
+    color: #8B0000; 
+    margin-bottom: 10px;
+    font-family: 'Sacramento', cursive;
+    text-align: center;
+}
+
+.reverso-contenido hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), #8B0000, rgba(0, 0, 0, 0));
+    margin: 15px 0;
+}
+
+/* --- NUEVO ESTILO PARA EL MENSAJE FINAL --- */
+.reverso-contenido .te-amo-final {
+    color: #8B0000; /* Color rojo oscuro */
+    font-family: 'Arial', sans-serif; /* Fuente clara (no cursiva) */
+    font-weight: bold; /* Negrita para destacar */
+    font-size: 1.4em; /* Más grande que el texto normal */
+    margin-top: 20px; /* Separación de la frase anterior */
+    margin-bottom: 0;
+    text-align: center;
+}
+
+
+/* ====================================== */
+/* 5. DISEÑO RESPONSIVO (PARA MÓVILES) */
+/* ====================================== */
+@media (max-width: 450px) {
+    
+    .tarjeta {
+        width: 80vw; 
+        max-width: 320px; 
+        min-height: 400px; 
+        padding: 0; 
+    }
+    
+    .frente, .reverso {
+        padding: 20px; 
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    h1 {
+        font-size: 2em; 
+        margin-bottom: 10px;
+    }
+
+    .contenido-mensaje p {
+        font-size: 1em;
+        margin-bottom: 10px;
+    }
+
+    .corazon-animado {
+        margin: 20px auto 10px auto; 
+    }
+    
+    .firma {
+        font-size: 1.1em;
+        margin-top: 20px !important;
+    }
+    
+    .reverso-contenido h2 {
+        font-size: 1.6em;
+    }
+    
+    /* Adaptar pantalla de clave a móvil */
+    .bloqueador-pantalla h2 {
+        font-size: 2.5em;
+    }
+    
+    .reverso-contenido .te-amo-final {
+        font-size: 1.2em;
+        margin-top: 15px;
+    }
+}
+
+/* -------------------------------------- */
+/* 6. ESTILO PARA EL BESO ANIMADO (Doble Clic) */
+/* -------------------------------------- */
+.besito {
+    position: absolute;
+    width: 20px; 
+    height: 20px;
+    background-color: #8B0000; 
+    transform: rotate(-45deg);
+    pointer-events: none; 
+    opacity: 0;
+    animation: aparecer-desvanecer 1s forwards; 
+    z-index: 1000; 
+}
+
+.besito::before,
+.besito::after {
+    content: "";
+    width: 20px;
+    height: 20px;
+    background-color: #8B0000;
+    border-radius: 50%;
+    position: absolute;
+}
+.besito::before {
+    left: -10px;
+    top: 0;
+}
+.besito::after {
+    top: -10px;
+    left: 0;
+}
+
+@keyframes aparecer-desvanecer {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(-45deg) scale(0.5);
+    }
+    30% {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(-45deg) scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -100px) rotate(-45deg) scale(0.8); 
+    }
+}
+
+/* -------------------------------------- */
+/* 7. ESTILOS DE CORAZONES FLOTANTES (PANTALLA CLAVE) */
+/* -------------------------------------- */
+
+.corazon-flotante {
+    position: fixed; 
+    width: 25px; 
+    height: 25px;
+    background-color: #8B0000; 
+    transform: rotate(-45deg);
+    pointer-events: none; 
+    opacity: 0;
+    z-index: 1999; 
+}
+
+/* Las dos partes circulares del corazón */
+.corazon-flotante::before,
+.corazon-flotante::after {
+    content: "";
+    width: 25px;
+    height: 25px;
+    background-color: #8B0000;
+    border-radius: 50%;
+    position: absolute;
+}
+.corazon-flotante::before {
+    left: -12.5px;
+    top: 0;
+}
+.corazon-flotante::after {
+    top: -12.5px;
+    left: 0;
+}
+
+/* Animación de flotación (para corazones que vienen de ABAJO) */
+@keyframes flotar-arriba {
+    0% { transform: translateY(0) rotate(-45deg) scale(0.6); opacity: 0; }
+    30% { opacity: 0.8; }
+    70% { opacity: 0.5; }
+    100% { transform: translateY(-100vh) rotate(-45deg) scale(1.2); opacity: 0; }
+}
+
+/* Animación de flotación (para corazones que vienen de ARRIBA) */
+@keyframes flotar-abajo {
+    0% { transform: translateY(0) rotate(-45deg) scale(0.6); opacity: 0; }
+    30% { opacity: 0.8; }
+    70% { opacity: 0.5; }
+    100% { transform: translateY(100vh) rotate(-45deg) scale(1.2); opacity: 0; }
+}
