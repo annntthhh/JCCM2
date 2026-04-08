@@ -1,1 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para mi precioso</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="main.css"> 
+</head>
+<body>
 
+    <div id="bloqueador" class="bloqueador-pantalla">
+        <h2>Ingresa la Clave Secreta</h2>
+        <input type="password" id="claveInput" placeholder="Introduce la clave">
+        <button id="claveBoton">Abrir Tarjeta</button>
+        <p id="mensajeError">Clave incorrecta. ¡Inténtalo de nuevooooo!</p>
+    </div>
+
+    <div id="tarjetaContenido" class="tarjeta-contenedor oculto">
+        <div class="tarjeta volteable" onclick="this.classList.toggle('girar')">
+
+            <div class="frente">
+                <h1>Para el chico que se ha logrado ganar my heart</h1> 
+
+                <div class="corazon-animado"></div>
+
+                <div class="contenido-mensaje">
+                    <p>Este es un pequeño detalle especial para ti</p>
+                    <p>Te envío algo de mi amor en esta tarjetita.</p>
+                    <p class="firma">- Tu ani</p>
+                </div>
+            </div>
+            <div class="reverso">
+                <div class="contenido-mensaje reverso-contenido">
+                    <h2>¡Una sorpresa para ti!</h2>
+                    <hr>
+                    <p>Enserio en tan poco tiempo has logrado ganarte mi corazón, y wowowo ya 3 dias y me gustas tannnnto. Que sorprendente....Me emociona tanto saber que llegó a mi vida algo que he pedido durante mucho tiempo<p 
+                  class="te-amo-final">Ailoviusomuchhhh</p>
+                </div>
+            </div>
+            </div>
+    </div>
+
+    <script>
+        // --- CONFIGURACIÓN DE LA CLAVE ---
+        const CLAVE_SECRETA = "8888"; // CLAVE FINAL
+        // ---------------------------------
+        
+        const bloqueador = document.getElementById('bloqueador');
+        const tarjetaContenido = document.getElementById('tarjetaContenido');
+        const claveInput = document.getElementById('claveInput');
+        const claveBoton = document.getElementById('claveBoton');
+        const mensajeError = document.getElementById('mensajeError');
+        
+        let intervaloCorazones;
+
+        // --- FUNCIÓN DE VERIFICACIÓN DE CLAVE ---
+        function verificarClave() {
+            if (claveInput.value.toLowerCase() === CLAVE_SECRETA) {
+                // Clave correcta: ocultar bloqueador y mostrar tarjeta
+                bloqueador.style.opacity = 0;
+                
+                // DETENER LA CREACIÓN DE NUEVOS CORAZONES. 
+                // Los existentes flotarán un ratito y luego se eliminarán solos.
+                clearInterval(intervaloCorazones); 
+
+                // Esperar a que la transición de opacidad termine antes de ocultar
+                setTimeout(() => { 
+                    bloqueador.style.display = 'none';
+                    tarjetaContenido.classList.remove('oculto');
+                }, 500); 
+
+            } else {
+                // Clave incorrecta: mostrar mensaje de error
+                mensajeError.style.opacity = 1;
+                claveInput.value = ''; 
+                claveInput.focus(); 
+                setTimeout(() => { mensajeError.style.opacity = 0; }, 2000);
+            }
+        }
+
+        // Eventos para el botón y la tecla Enter
+        claveBoton.addEventListener('click', verificarClave);
+        claveInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                verificarClave();
+            }
+        });
+
+        // ----------------------------------------------------
+        // LÓGICA DE CORAZONES FLOTANTES EN PANTALLA DE CLAVE 
+        // ----------------------------------------------------
+        
+        function crearCorazon(origen) {
+            const corazon = document.createElement('div');
+            corazon.classList.add('corazon-flotante');
+            
+            const anchoPantalla = window.innerWidth;
+            const rangoX = anchoPantalla * 0.5;
+            const inicioX = (anchoPantalla - rangoX) / 2;
+            const posicionX = Math.random() * rangoX + inicioX; 
+
+            corazon.style.left = posicionX + 'px';
+            
+            let duracion = Math.random() * 5 + 5; 
+
+            if (origen === 'arriba') {
+                corazon.style.top = '-50px';
+                corazon.style.animation = `flotar-abajo ${duracion}s linear forwards`;
+            } else { // 'abajo'
+                corazon.style.bottom = '-50px';
+                corazon.style.animation = `flotar-arriba ${duracion}s linear forwards`;
+            }
+            
+            document.body.appendChild(corazon);
+
+            // Eliminar el corazón después de su animación (+ 500ms de seguridad)
+            setTimeout(() => {
+                corazon.remove();
+            }, duracion * 1000 + 500);
+        }
+
+        // Lanzar un corazón de forma aleatoria (arriba o abajo)
+        function lanzarCorazon() {
+            if (Math.random() < 0.5) {
+                crearCorazon('arriba');
+            } else {
+                crearCorazon('abajo');
+            }
+        }
+
+        // Iniciar el lanzamiento de corazones cada 500ms
+        intervaloCorazones = setInterval(lanzarCorazon, 500);
+
+
+        // ----------------------------------------------------
+        // Lógica del Besito (DOBLE CLIC) - SOLO EN TARJETA REVELADA
+        // ----------------------------------------------------
+        document.addEventListener('dblclick', function(e) {
+            // Solo activar los besitos si la tarjeta es visible
+            if (bloqueador.style.display !== 'none') {
+                return; 
+            }
+            
+            var besito = document.createElement('div');
+            besito.classList.add('besito');
+            besito.style.left = (e.clientX - 10) + 'px';
+            besito.style.top = (e.clientY - 10) + 'px';
+            document.body.appendChild(besito);
+
+            setTimeout(function() {
+                besito.remove();
+            }, 1000); 
+        });
+    </script>
+
+</body>
+</html>
